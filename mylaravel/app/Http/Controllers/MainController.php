@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-
-use Illuminate\Http\Request;
 use App\Models\Contact;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MainController extends Controller
 {
@@ -19,28 +19,31 @@ class MainController extends Controller
         return view('about');
     }
 
-    public function review() {
+    public function review()
+    {
+        // return view('review');
         $reviews = new Contact();
+        // dd($reviews->all());
+        $reviews = DB::table('contacts')->orderBy('created_at', 'desc')->get();
         return view('review', ['reviews' => $reviews->all()]);
     }
-  
+
     public function review_check(Request $request)
-    {       
+    {
+        // dd($request);
         $valid = $request->validate([
-            'email' => 'required|min:4|max:100',
             'subject' => 'required|min:4|max:100',
-            'message' => 'required|min:15|max:500'
-        ]); 
+            'message' => 'required|min:15|max:500',
+        ]);
+
         $review = new Contact();
-        $review->email = $request->input('email');
         $review->subject = $request->input('subject');
         $review->message = $request->input('message');
-       
-        $review->save();
+        $review->user = Auth::user()->name;
 
+        $review->save();
         return redirect()->route('review');
-        
-     
+
     }
 
 }

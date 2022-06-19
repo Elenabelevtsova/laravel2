@@ -1,8 +1,8 @@
+@extends('layout')
+@extends('layouts.app'):
 @section('title')
 Home
 @endsection
-
-@extends('layout')
 
 @section('main_content')
 <div class="jumbotron bg-warning">
